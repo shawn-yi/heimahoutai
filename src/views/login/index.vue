@@ -34,23 +34,23 @@ export default {
           { pattern: /^1[35789]\d{9}$/, message: '请正确填写手机号码' }
         ],
         code: [
-          { required: true, mseeage: '必须填写校验码' }
+          { required: true, message: '必须填写校验码' }
         ],
         xieyi: [
           { validator: xieyirule }
         ]
       },
       loginForm: {
-        mobile: '',
-        code: '',
+        mobile: '13593561111',
+        code: '246810',
         xieyi: true
       }
     }
   },
   methods: {
     login () {
-      this.$refs.loginFormRef.validate((vilid) => {
-        if (vilid) {
+      this.$refs.loginFormRef.validate((valid) => {
+        if (valid) {
           let pro = this.$http.post('/authorizations', this.loginForm)
           pro
             .then(result => {
