@@ -14,7 +14,7 @@
           <span>我已阅读并同意用户协议和隐私条款</span>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" style="width: 100%" @click="login()">登录</el-button>
+          <el-button :loading="isActive" type="primary" style="width: 100%" @click="login()">登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -22,12 +22,15 @@
 </template>
 
 <script>
+import '@/assets/js/gt.js'
 export default {
   data () {
     var xieyirule = function (rule, value, callback) {
       value ? callback() : callback(new Error('请勾选遵守规则'))
     }
     return {
+      ctaObj: null,
+      isActive: false,
       loginRules: {
         mobile: [
           { required: true, message: '必须填写手机号码' },
@@ -51,19 +54,51 @@ export default {
     login () {
       this.$refs.loginFormRef.validate((valid) => {
         if (valid) {
-          let pro = this.$http.post('/authorizations', this.loginForm)
+          if (this.ctaObj !== null) {
+            return this.ctaObj.verify() // 显示窗口
+          }
+          this.isActive = true
+          let pro = this.$http.get(`captchas/${this.loginForm.mobile}`)
           pro
             .then(result => {
-              if (result.status === 201) {
-                window.sessionStorage.setItem('token', JSON.stringify(result.data.data))
-                this.$router.push({ name: 'home' })
-              }
+              let { data } = result.data
+              window.initGeetest({
+                // 以下配置参数来自服务端 SDK
+                gt: data.gt,
+                challenge: data.challenge,
+                offline: !data.success,
+                new_captcha: true,
+                product: 'bind'
+              }, captchaObj => {
+                captchaObj.onReady(() => {
+                  captchaObj.verify()
+                  this.ctaObj = captchaObj
+                  this.isActive = false
+                }).onSuccess(() => {
+                  this.logact()
+                }).onError(() => {
+                })
+                captchaObj.verify() // 显示验证码
+              })
             })
             .catch(err => {
-              this.$message({ type: 'error', message: '错误是' + err, showClose: true })
+              return this.$message.error('人机验证失败' + err)
             })
         }
       })
+    },
+    logact () {
+      let pro = this.$http.post('/authorizations', this.loginForm)
+      pro
+        .then(result => {
+          if (result.status === 201) {
+            window.sessionStorage.setItem('token', JSON.stringify(result.data.data))
+            this.$router.push({ name: 'home' })
+          }
+        })
+        .catch(err => {
+          this.$message({ type: 'error', message: '错误是' + err, showClose: true })
+        })
     }
   }
 }
