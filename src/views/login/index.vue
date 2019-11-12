@@ -4,10 +4,14 @@
       <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules">
         <el-form-item prop="mobile">
           <img src="./logo_index.png">
-          <el-input v-model="loginForm.mobile" placeholder="请输入手机号码"></el-input>
+          <el-input v-model="loginForm.mobile" placeholder="请输入手机号码">
+            <i slot="prefix" class="iconfont icon-shouji"></i>
+          </el-input>
         </el-form-item>
         <el-form-item prop="code">
-          <el-input v-model="loginForm.code" placeholder="请输入校验码"></el-input>
+          <el-input v-model="loginForm.code" placeholder="请输入校验码">
+            <i slot="prefix" class="iconfont icon-dunpai"></i>
+          </el-input>
         </el-form-item>
         <el-form-item prop="xieyi" style="text-align: left;">
           <el-checkbox v-model="loginForm.xieyi" style="margin-right: 10px;"></el-checkbox>
@@ -23,6 +27,7 @@
 
 <script>
 import '@/assets/js/gt.js'
+import '@/assets/font_8r9sjpt6x1p/iconfont.css'
 export default {
   data () {
     var xieyirule = function (rule, value, callback) {

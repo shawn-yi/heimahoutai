@@ -1,0 +1,25 @@
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot?t=1573443279783'); /* IE9 */
+  src: url('iconfont.eot?t=1573443279783#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAO8AAsAAAAAB8gAAANvAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDBgqDLIJ6ATYCJAMMCwgABCAFhG0HORvDBhHVm/PIfiTYuMXFSq3eNKwFTdKbIMC6qtLJzPbSOpivc+9Rfol+TgMEzAnenGuK5QsT9XIkZ588+kLacXpZ9uDzXE5v2glc4wPltCaNaXtr76gXYBxQoGNOkDAukAS9x9hAu5/VEIANAeKIsoq6FugojE4CEAP69u6KnrKgaooFOgJzyUiFmIsJXZumXQHm+N8Xn0lJBw2TxOjZpFd5D4reqXfu0rAYdHAJVOO5AG4cSCAOKBCdSj1tkGEsjsRGMar6bDMKgTZW0GLBV6p6s/mHBxoChBmj0A6AKBLX4J2ylbHJHdVnvZIEwAzowGRgNwbn5r1NSCc7aycREOQyymHjUS/zslPhjlvO+FotP97FdsYiY6GbzeLFDUtGbN7esGPGNmNra2Ojjd307cK0ZImn/aJNqFGi1b1Wl+555GQtvFN1p0UL7e7dljfr78643/x26/uil6f7orvVF+962mrGnSZX7thMPxxxqeDWvRBpu+h+azOt5eLpbi1aObfeari3XDTDs/WShsQNY3TDUZ9ihaEPwWqK7liX1c3Uy7ZnUbeinra9ZPelXb4mIPH0xX/stXe0u2eP3Tg7y9l7ex3tx5H5dUFF1Mhyn6UlUYwe4FwSubTct0YrZhTFFdOLCha9LA7uN7G8+aSIsqiaipHbnZzKqmMvnutof1bLS88dOimwT1aUy9OVa75OSuym8mRRF9tir2r/4rhLL5d5L3v0sEOHpd4pPsuGD5tG+v/4scyHLgBYxst0OdZPnJEjZPFf+w0H95ff7+yY91cvFAAPv/2/jl7LeEX7PHQ04FT/SNWyQqkawyqVrLSVelLSBNMbkKOcN/FnSgFcPOtf9h4SAh33GBpW+EOiE0YqNg4mbEmDGZ1C2BCrcrwtroYhEcoaiDEJIHCyBxoOnIHEyVVSsU9hwsNXmHFKgs+9O8xYONY3PzEqQQv6D4Oh1Vl2yYPiO/p9VpzU+PwbeRuC0JR1NnnDFXmMPtvHtyIOHNMCV1gP55kgMI1opOxFQldVruxJpaElyp0wpAhkAe0PDAyycm5tkec+f4e83UzhGkFF9g2xzdA4aJTqFuTNuLYSXMs5mw+vJYQDHEYW4AouNJsxAkJ5sxEyRKnvEQk6Fanm2hrL+c3L860DbBgLyzQhhSJeT/s4xHZfgxqiCAA=') format('woff2'),
+  url('iconfont.woff?t=1573443279783') format('woff'),
+  url('iconfont.ttf?t=1573443279783') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1573443279783#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shouji:before {
+  content: "\e615";
+}
+
+.icon-dunpai:before {
+  content: "\e604";
+}
+
