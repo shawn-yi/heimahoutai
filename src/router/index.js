@@ -10,7 +10,8 @@ const routes = [
     component: () => import('@/views/home'),
     redirect: '/welcome',
     children: [
-      { path: '/welcome', name: 'welcome', component: () => import('@/views/welcome') }
+      { path: '/welcome', name: 'welcome', component: () => import('@/views/welcome') },
+      { path: '/article', name: 'article', component: () => import('@/views/article') }
     ]
   }
 ]

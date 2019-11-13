@@ -6,11 +6,7 @@ import '@/assets/css/base.css'
 
 import ElementUi from 'element-ui'
 
-import axios from 'axios'
-
-axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
-
-Vue.prototype.$http = axios
+import '@/utils/ax.js'
 
 Vue.use(ElementUi)
 Vue.config.productionTip = false
