@@ -1,18 +1,18 @@
 <template>
   <el-card class="box-card">
     <div slot="header" class="clearfix">
-      <span>发布文章</span>
+      <span>修改文章</span>
     </div>
     <div class="text item">
-      <el-form ref="addFormRef" :model="addForm" label-width="120px" :rules="addFormRules">
+      <el-form ref="editFormRef" :model="editForm" label-width="120px" :rules="editFormRules">
         <el-form-item label="标题" prop="title">
-          <el-input type="text" v-model="addForm.title"></el-input>
+          <el-input type="text" v-model="editForm.title"></el-input>
         </el-form-item>
         <el-form-item label="内容" prop="content">
-            <quill-editor v-model="addForm.content"></quill-editor>
+            <quill-editor v-model="editForm.content"></quill-editor>
         </el-form-item>
         <el-form-item label="封面">
-          <el-radio-group v-model="addForm.cover.type">
+          <el-radio-group v-model="editForm.cover.type">
             <el-radio :label="1">单图</el-radio>
             <el-radio :label="3">三图</el-radio>
             <el-radio :label="0">无图</el-radio>
@@ -20,11 +20,11 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道" prop="channel_id">
-          <channel-com @slt="selectHandler"></channel-com>
+          <channel-com @slt="selectHandler" :cid="editForm.channel_id"></channel-com>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="addarticle(false)">发布</el-button>
-            <el-button @click="addarticle(true)">存入草稿</el-button>
+            <el-button type="primary" @click="articleEdit(false)">修改</el-button>
+            <el-button @click="articleEdit(true)">存入草稿</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -36,31 +36,48 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
-import ChannelCom from '@/components/channel.vue'
-
 import { quillEditor } from 'vue-quill-editor'
+
+import ChannelCom from '@/components/channel.vue'
 
 export default {
   components: {
-    quillEditor,
-    ChannelCom
+    ChannelCom,
+    quillEditor
+  },
+  computed: {
+    aid () {
+      return this.$route.params.aid
+    }
   },
   methods: {
     selectHandler (val) {
-      this.addForm.channel_id = val
-      console.log(val)
+      this.editForm.channel_id = val
     },
-    addarticle (flag) {
-      this.$refs.addFormRef.validate(valid => {
+    getArticleByAid () {
+      let pro = this.$http.get(`articles/${this.aid}`)
+      pro
+        .then(result => {
+        //   console.log(result)
+          if (result.data.message === 'OK') {
+            this.editForm = result.data.data
+          }
+        })
+        .catch(err => {
+          return this.$message.error('获取文章错误' + err)
+        })
+    },
+    articleEdit (flag) {
+      this.$refs.editFormRef.validate(valid => {
         if (valid) {
-          let pro = this.$http.post('/articles', this.addForm, { params: { draft: flag } })
+          let pro = this.$http.put(`/articles/${this.aid}`, this.editForm, { params: { draft: flag } })
           pro
             .then(result => {
-              this.$message.success('文章发表成功')
+              this.$message.success('文章修改成功')
               this.$router.push('/article')
             })
             .catch(err => {
-              return this.$message.error('文章发表错误' + err)
+              return this.$message.error('文章修改错误' + err)
             })
         }
       })
@@ -79,11 +96,12 @@ export default {
     }
   },
   created () {
+    this.getArticleByAid()
     this.getChannleList()
   },
   data () {
     return {
-      addForm: {
+      editForm: {
         title: '',
         content: '',
         cover: {
@@ -93,7 +111,7 @@ export default {
         channel_id: ''
       },
       channelList: [],
-      addFormRules: {
+      editFormRules: {
         title: [
           { required: true, message: '标题必填' },
           // 后端要求title长度介于5-30个字符

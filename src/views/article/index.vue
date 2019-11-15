@@ -7,7 +7,7 @@
       <div class="text item">
         <el-form ref="searchFormRef" :model="searchForm" label-width="100px">
           <el-form-item label="文章状态：">
-            <el-radio-group v-model="searchForm.status" @change="getArticleList()">
+            <el-radio-group v-model="searchForm.status">
               <el-radio label>全部</el-radio>
               <el-radio label="0">草稿</el-radio>
               <el-radio label="1">待审核</el-radio>
@@ -16,19 +16,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="频道列表：">
-            <el-select
-              v-model="searchForm.channel_id"
-              placeholder="请选择"
-              clearable
-              @change="getArticleList()"
-            >
-              <el-option
-                v-for="item in channelList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+            <channel-com @slt="selectHandler"></channel-com>
           </el-form-item>
           <el-form-item label="时间选择：">
             <el-date-picker
@@ -72,7 +60,7 @@
           <el-table-column prop="pubdate" label="发表时间"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="stData">
-              <el-button type="primary" size="mini">修改</el-button>
+              <el-button type="primary" size="mini" @click="$router.push(`/articleedit/${stData.row.id}`)">修改</el-button>
               <el-button type="danger" size="mini" @click="del(stData.row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -94,7 +82,11 @@
 </template>
 
 <script>
+import ChannelCom from '@/components/channel.vue'
 export default {
+  components: {
+    ChannelCom
+  },
   watch: {
     timetotime: function (newv, oldv) {
       if (newv) {
@@ -106,21 +98,22 @@ export default {
         this.searchForm.end_pubdate = ''
       }
       this.getArticleList()
+    },
+    searchForm: {
+      handler: function (newv, oldv) {
+        this.getArticleList()
+      },
+      deep: true
     }
   },
-  // watch: {
-  //   searchForm: {
-  //     handler: function (newv, oldv) {
-  //       this.getArticleList()
-  //     },
-  //     deep: true
-  //   }
-  // },
   created () {
     this.getChannelList()
     this.getArticleList()
   },
   methods: {
+    selectHandler (val) {
+      this.searchForm.channel_id = val
+    },
     del (id) {
       this.$confirm('是否确认删除', '删除', {
         confirmButtonText: '确定',
@@ -140,11 +133,9 @@ export default {
     },
     handleSizeChange (val) {
       this.searchForm.per_page = val
-      this.getArticleList()
     },
     handleCurrentChange (val) {
       this.searchForm.page = val
-      this.getArticleList()
     },
     getArticleList () {
       let searchData = {}
