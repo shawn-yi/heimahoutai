@@ -11,6 +11,7 @@ const routes = [
     redirect: '/welcome',
     children: [
       { path: '/welcome', name: 'welcome', component: () => import('@/views/welcome') },
+      { path: '/account', name: 'account', component: () => import('@/views/account/account.vue') },
       { path: '/article', name: 'article', component: () => import('@/views/article') },
       { path: '/articleadd', name: 'articleadd', component: () => import('@/views/articleadd/articleadd.vue') },
       { path: '/articleedit/:aid', name: 'articleedit', component: () => import('@/views/articleedit/articleedit.vue') }
