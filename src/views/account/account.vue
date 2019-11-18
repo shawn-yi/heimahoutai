@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import bus from '@/utils/bus.js'
 export default {
   data () {
     return {
@@ -81,6 +82,7 @@ export default {
         //   console.log(result)
           if (result.data.message === 'OK') {
             this.accountForm.photo = result.data.data.photo
+            bus.$emit('jieshouphoto', result.data.data.photo)
             this.$message.success('头像修改成功')
           }
         })
@@ -96,6 +98,7 @@ export default {
             .then(result => {
               console.log(result)
               if (result.data.message === 'OK') {
+                bus.$emit('jieshouname', result.data.data.name)
                 return this.$message.success('用户更新成功')
               }
             })

@@ -9,7 +9,7 @@
           <el-input type="text" v-model="addForm.title"></el-input>
         </el-form-item>
         <el-form-item label="内容" prop="content">
-            <quill-editor v-model="addForm.content"></quill-editor>
+          <quill-editor v-model="addForm.content"></quill-editor>
         </el-form-item>
         <el-form-item label="封面">
           <el-radio-group v-model="addForm.cover.type">
@@ -18,16 +18,39 @@
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
+          <ul>
+            <li
+              class="uploadbox"
+              v-for="item in coverNum"
+              :key="item"
+              @click="dialogFlag()"
+            >
+              <span>点击图标选择图片</span>
+              <img v-if="addForm.cover.images[item-1]" :src="addForm.cover.images[item-1]" alt />
+              <div v-else class="el-icon-picture-outline"></div>
+            </li>
+          </ul>
         </el-form-item>
         <el-form-item label="频道" prop="channel_id">
           <channel-com @slt="selectHandler"></channel-com>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="addarticle(false)">发布</el-button>
-            <el-button @click="addarticle(true)">存入草稿</el-button>
+          <el-button type="primary" @click="addarticle(false)">发布</el-button>
+          <el-button @click="addarticle(true)">存入草稿</el-button>
         </el-form-item>
       </el-form>
     </div>
+    <el-dialog title="素材展示" :visible.sync="dialogVisible" width="60%">
+      <ul>
+        <li class="image-box" v-for="item in imageList" :key="item.id">
+          <img :src="item.url" alt="没有图片" @click="clkImg"/>
+        </li>
+      </ul>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -41,11 +64,42 @@ import ChannelCom from '@/components/channel.vue'
 import { quillEditor } from 'vue-quill-editor'
 
 export default {
+  computed: {
+    coverNum () {
+      if (this.addForm.cover.type > 0) {
+        return this.addForm.cover.type
+      }
+      return 0
+    }
+  },
   components: {
     quillEditor,
     ChannelCom
   },
   methods: {
+    clkImg (e) {
+      let lis = document.querySelectorAll('.image-box')
+      for (let i = 0; i < lis.length; i++) {
+        lis[i].style.border = ''
+      }
+      e.target.parentNode.style.border = 'red 4px solid'
+    },
+    getImageList () {
+      let pro = this.$http.get('/user/images', { params: this.querycdt })
+      pro
+        .then(result => {
+          // console.log(result)
+          if (result.data.message === 'OK') {
+            this.imageList = result.data.data.results
+          }
+        })
+        .catch(err => {
+          return this.$message.error('获取素材错误' + err)
+        })
+    },
+    dialogFlag () {
+      this.dialogVisible = true
+    },
     selectHandler (val) {
       this.addForm.channel_id = val
       console.log(val)
@@ -53,7 +107,9 @@ export default {
     addarticle (flag) {
       this.$refs.addFormRef.validate(valid => {
         if (valid) {
-          let pro = this.$http.post('/articles', this.addForm, { params: { draft: flag } })
+          let pro = this.$http.post('/articles', this.addForm, {
+            params: { draft: flag }
+          })
           pro
             .then(result => {
               this.$message.success('文章发表成功')
@@ -80,9 +136,18 @@ export default {
   },
   created () {
     this.getChannleList()
+    this.getImageList()
   },
   data () {
     return {
+      imageList: [], // 素材图片列表
+      // 获取素材图片的条件参数
+      querycdt: {
+        collect: false, // 非收藏图片
+        page: 1,
+        per_page: 20
+      },
+      dialogVisible: false,
       addForm: {
         title: '',
         content: '',
@@ -109,11 +174,54 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="less" scoped>
 .el-form /deep/ .ql-editor {
-    height: 200px;
+  height: 200px;
+}
+.uploadbox {
+  list-style: none;
+  width: 200px;
+  height: 200px;
+  margin: 10px;
+  float: left;
+  cursor: pointer;
+  border: 1px solid #eee;
+  span {
+    width: 200px;
+    height: 50px;
+    line-height: 50px;
+    display: block;
+    text-align: center;
+  }
+  div {
+    width: 200px;
+    height: 150px;
+    font-size: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+  }
+  img {
+    width: 200px;
+    height: 150px;
+  }
+}
+.image-box {
+  list-style: none;
+  width: 200px;
+  height: 140px;
+  background-color: #fff;
+  margin: 10px;
+  float: left;
+  border: 1px solid #eee;
+  cursor:pointer;
+  box-sizing:border-box;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>
