@@ -9,6 +9,7 @@
         :collapse="zhedie"
         :collapse-transition="false"
         router
+        :default-active="$route.path"
       >
         <el-menu-item index="/home" :style="{width: zhedie? '65px': '200px'}">
           <i class="el-icon-location"></i>
@@ -24,7 +25,7 @@
             <el-menu-item index="2-3">评论列表</el-menu-item>
             <el-menu-item index="/material">素材管理</el-menu-item>
         </el-submenu>
-        <el-menu-item index="3" :style="{width: zhedie? '65px': '200px'}">
+        <el-menu-item index="/fans" :style="{width: zhedie? '65px': '200px'}">
           <i class="el-icon-location"></i>
           <span slot="title">粉丝管理</span>
         </el-menu-item>
@@ -77,6 +78,7 @@
 import bus from '@/utils/bus.js'
 export default {
   created () {
+    // console.log(this.$route.path)
     bus.$on('jieshouname', nm => {
       // console.log(nm)
       let token = JSON.parse(window.sessionStorage.getItem('token'))

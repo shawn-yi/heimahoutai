@@ -23,7 +23,7 @@
               class="uploadbox"
               v-for="item in coverNum"
               :key="item"
-              @click="dialogFlag()"
+              @click="showDialog(item)"
             >
               <span>点击图标选择图片</span>
               <img v-if="addForm.cover.images[item-1]" :src="addForm.cover.images[item-1]" alt />
@@ -40,7 +40,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog title="素材展示" :visible.sync="dialogVisible" width="60%">
+    <el-dialog title="素材展示" :visible.sync="dialogVisible" width="60%" @close="clearImage">
       <ul>
         <li class="image-box" v-for="item in imageList" :key="item.id">
           <img :src="item.url" alt="没有图片" @click="clkImg"/>
@@ -48,7 +48,7 @@
       </ul>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="imgOk">确 定</el-button>
       </span>
     </el-dialog>
   </el-card>
@@ -77,12 +77,25 @@ export default {
     ChannelCom
   },
   methods: {
-    clkImg (e) {
+    clearImage () {
       let lis = document.querySelectorAll('.image-box')
       for (let i = 0; i < lis.length; i++) {
         lis[i].style.border = ''
       }
+      this.imgUrl = ''
+    },
+    imgOk () {
+      if (this.imgUrl) {
+        this.addForm.cover.images[this.xu] = this.imgUrl
+        this.dialogVisible = false
+      } else {
+        this.$message.error('未选取素材')
+      }
+    },
+    clkImg (e) {
+      this.clearImage()
       e.target.parentNode.style.border = 'red 4px solid'
+      this.imgUrl = event.target.src
     },
     getImageList () {
       let pro = this.$http.get('/user/images', { params: this.querycdt })
@@ -97,7 +110,8 @@ export default {
           return this.$message.error('获取素材错误' + err)
         })
     },
-    dialogFlag () {
+    showDialog (item) {
+      this.xu = item - 1
       this.dialogVisible = true
     },
     selectHandler (val) {
@@ -140,6 +154,8 @@ export default {
   },
   data () {
     return {
+      imgUrl: '',
+      xu: '',
       imageList: [], // 素材图片列表
       // 获取素材图片的条件参数
       querycdt: {
